@@ -3,9 +3,8 @@ stages:
 
 build_project:
   stage: build
-  image: alpine:latest
   script:
-    - echo "Подготовка DAG для Яндекс Практикума"
+    - echo "Сборка артефактов без внешних образов"
   artifacts:
     paths:
       - dags/
