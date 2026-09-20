@@ -21,11 +21,17 @@ from airflow.models import Variable
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from botocore.exceptions import ClientError
 
-# Модуль лежит рядом с DAG: папка dags/ есть в sys.path воркера Airflow
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent))
-from calculate_batch_features import build_batch_features, load_source_tables
+
+try:
+    from calculate_batch_features import build_batch_features, load_source_tables
+except Exception as e:
+    # Если импорт падает, мы создаем фейковые функции, чтобы Airflow не игнорировал DAG
+    print(f"CRITICAL IMPORT ERROR: {e}")
+    def build_batch_features(*args, **kwargs): raise e
+    def load_source_tables(*args, **kwargs): raise e
 
 
 DAG_ID = "batch_features"
