@@ -1,10 +1,11 @@
 stages:
-  - line-check
+  - build
 
-check-dag:
-  stage: line-check
-  image: python:3.9-slim
+build_project:
+  stage: build
+  image: alpine:latest
   script:
-    - echo "Проверка структуры проекта"
-    - ls -la dags/
-
+    - echo "Подготовка DAG для Яндекс Практикума"
+  artifacts:
+    paths:
+      - dags/
