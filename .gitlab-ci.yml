@@ -1,14 +1,10 @@
 stages:
-  - build
+  - line-check
 
-build_images:
-  stage: build
-  image: docker:24.0.5
-  services:
-    - name: docker:24.0.5-dind
-      alias: docker
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
+check-dag:
+  stage: line-check
+  image: python:3.9-slim
   script:
-    - docker info
+    - echo "Проверка структуры проекта"
+    - ls -la dags/
+
