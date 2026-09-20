@@ -8,7 +8,7 @@ ML-модель «покупка в ближайшие 7 дней» опирае
 * **Строго по данным, доступным до даты среза `run_date`** (утечка из будущего исключена).
 * Логика расчёта единая для исторических срезов (обучение модели) и инференсного среза: меняется только дата среза `run_date`, передаваемая в DAG параметром.
 
-## 2. What делает DAG
+## 2. Что делает DAG
 DAG `batch_features` (ручной запуск: `schedule=None`, `catchup=False`, `max_active_runs=1`):
 
 1. `build_and_upload_features`:
@@ -78,7 +78,7 @@ DAG `batch_features` (ручной запуск: `schedule=None`, `catchup=False
   * Анти-утечка: в расчёт попадают только записи с временем строго меньше `run_date` (контроль встроен в `build_batch_features`).
 * **Внешняя проверка:** `notebook.ipynb`, ячейка «Сверка результатов двух прогонов DAG»: набор колонок и множество `customer_id` у срезов идентичны, метка `run_date` внутри таблиц совпадает с датой прогона, значения признаков различаются. Выводы прогонов 2025-09-01 and 2025-10-01 сохранены в тетрадке.
 
-## 9. Правила расчёта признаков (кратко)
+## 9. Правила расчёта признаков
 * Окна агрегации: `[run_date - 7d, run_date)` и `[run_date - 30d, run_date)`; фильтры строгие: `timestamp < run_date`, `start_time < run_date`, `order_time < run_date`.
 * Дедупликация по первичным ключам таблиц; `product_id` участвует только в признаке уникальных товаров (строки с заданным значением).
 * Денежные агрегаты (`orders_cnt_30d`, `orders_sum_usd_30d`, `orders_avg_usd_30d`) — только из `orders`.
@@ -86,5 +86,5 @@ DAG `batch_features` (ручной запуск: `schedule=None`, `catchup=False
 * `days_since_last_purchase` — по всей истории до `run_date`; заказов не было → −1.
 * Деление на ноль в конверсиях → 0.0; пропуски: счётчики → 0, вещественные → 0.0.
 
-### Состав признаков (контракт колонок)
+### Состав признаков
 `customer_id`, `run_date`, `page_view_cnt_7d`, `page_view_cnt_30d`, `add_to_cart_cnt_7d`, `add_to_cart_cnt_30d`, `view_to_cart_conv_7d`, `view_to_cart_conv_30d`, `cart_to_purchase_conv_7d`, `cart_to_purchase_conv_30d`, `unique_products_7d`, `unique_products_30d`, `avg_session_duration_sec_30d`, `sessions_cnt_7d`, `sessions_cnt_30d`, `days_since_last_purchase`, `orders_cnt_30d`, `orders_sum_usd_30d`, `orders_avg_usd_30d`.
