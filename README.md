@@ -1,8 +1,8 @@
-\# NorthCart: пайплайн подготовки batch-признаков в Airflow
+# NorthCart: пайплайн подготовки batch-признаков в Airflow
 
 
 
-\## 1. Постановка задачи
+## 1. Постановка задачи
 
 
 
@@ -12,7 +12,7 @@ ML-модель «покупка в ближайшие 7 дней» опирае
 
 для каждой пары `(customer\_id, run\_date)` рассчитать признаки за окна 7 и 30 дней
 
-\*\*строго по данным, доступным до даты среза `run\_date`\*\* (утечка из будущего исключена).
+**строго по данным, доступным до даты среза `run\_date`** (утечка из будущего исключена).
 
 
 
@@ -22,7 +22,7 @@ ML-модель «покупка в ближайшие 7 дней» опирае
 
 
 
-\## 2. Что делает DAG
+## 2. Что делает DAG
 
 
 
@@ -30,7 +30,7 @@ DAG `batch\_features` (ручной запуск: `schedule=None`, `catchup=Fals
 
 
 
-1\. `build\_and\_upload\_features`:
+1. `build\_and\_upload\_features`:
 
 &#x20;  - читает `run\_date` из Airflow Variable `batch\_features\_run\_date`;
 
@@ -44,7 +44,7 @@ DAG `batch\_features` (ручной запуск: `schedule=None`, `catchup=Fals
 
 &#x20;    по ключу `run\_date=<дата>/batch\_features.csv`.
 
-2\. `validate\_saved\_result`: проверяет, что объект в S3 существует и не пустой.
+2. `validate\_saved\_result`: проверяет, что объект в S3 существует и не пустой.
 
 
 
@@ -52,7 +52,7 @@ DAG `batch\_features` (ручной запуск: `schedule=None`, `catchup=Fals
 
 
 
-\## 3. Структура репозитория
+## 3. Структура репозитория
 
 
 
@@ -78,21 +78,21 @@ DAG `batch\_features` (ручной запуск: `schedule=None`, `catchup=Fals
 
 
 
-\## 4. Зависимости и окружение
+## 4. Зависимости и окружение
 
 
 
-\- Python 3.9+.
+- Python 3.9+.
 
-\- Установка: `pip install -r requirements.txt`
+- Установка: `pip install -r requirements.txt`
 
 &#x20; (pandas, psycopg2-binary, boto3, pyarrow, python-dotenv).
 
-\- Airflow 2.x с Postgres-провайдером доступен в окружении платформы; файлы DAG и модуля
+- Airflow 2.x с Postgres-провайдером доступен в окружении платформы; файлы DAG и модуля
 
 &#x20; лежат в папке `dags/`, которую Airflow сканирует автоматически.
 
-\- Локальный запуск тетрадки: секреты читаются из файла `.env`, которого нет в репозитории
+- Локальный запуск тетрадки: секреты читаются из файла `.env`, которого нет в репозитории
 
 &#x20; (имена переменных: `DB\_NAME`, `DB\_HOST`, `DB\_PORT`, `DB\_USER`, `DB\_PASSWORD`,
 
@@ -100,25 +100,25 @@ DAG `batch\_features` (ручной запуск: `schedule=None`, `catchup=Fals
 
 
 
-\## 5. База данных (данные из сниппета «===Активация БД===»)
+## 5. База данных (данные из сниппета «===Активация БД===»)
 
 
 
-\- \*\*Имя базы данных:\*\* `playground\_ds\_20260915\_ff9d3b0716`
+- **Имя базы данных:\*\* `playground\_ds\_20260915\_ff9d3b0716`
 
-\- \*\*user:\*\* `ds\_20260915\_ff9d3b0716`
+- **user:** `ds\_20260915\_ff9d3b0716`
 
-\- Хост, порт и пароль берутся из сниппета активации и указываются только в Airflow Connection.
+- Хост, порт и пароль берутся из сниппета активации и указываются только в Airflow Connection.
 
-\- Таблицы: `public.customers`, `public.sessions`, `public.events`, `public.orders`.
-
-
-
-\## 6. Настройка Airflow (создать заранее)
+- Таблицы: `public.customers`, `public.sessions`, `public.events`, `public.orders`.
 
 
 
-\### Variables (Admin → Variables)
+## 6. Настройка Airflow (создать заранее)
+
+
+
+### Variables (Admin → Variables)
 
 | Имя | Значение |
 
@@ -128,7 +128,7 @@ DAG `batch\_features` (ручной запуск: `schedule=None`, `catchup=Fals
 
 
 
-\### Connections (Admin → Connections)
+### Connections (Admin → Connections)
 
 | Connection ID | Тип | Содержимое |
 
@@ -144,17 +144,17 @@ DAG `batch\_features` (ручной запуск: `schedule=None`, `catchup=Fals
 
 
 
-\## 7. Запуск DAG
+## 7. Запуск DAG
 
 
 
-1\. Установить Variable `batch\_features\_run\_date` в нужную дату среза.
+1. Установить Variable `batch\_features\_run\_date` в нужную дату среза.
 
-2\. DAGs → `batch\_features`: включить тумблер (unpause) и нажать \*\*Trigger DAG\*\*.
+2. DAGs → `batch\_features`: включить тумблер (unpause) и нажать **Trigger DAG**.
 
-3\. Дождаться успеха обеих задач: `build\_and\_upload\_features` → `validate\_saved\_result`.
+3. Дождаться успеха обеих задач: `build\_and\_upload\_features` → `validate\_saved\_result`.
 
-4\. Для нового среза — поменять значение Variable и снова Trigger: логика расчёта не меняется,
+4. Для нового среза — поменять значение Variable и снова Trigger: логика расчёта не меняется,
 
 &#x20;  меняется только дата среза.
 
@@ -166,17 +166,17 @@ DAG `batch\_features` (ручной запуск: `schedule=None`, `catchup=Fals
 
 
 
-\## 8. Результат расчёта и как проверить корректность
+## 8. Результат расчёта и как проверить корректность
 
 
 
-\- \*\*Куда сохраняется:\*\* S3-бакет `s3-ds-20260915-ff9d3b0716`,
+- **Куда сохраняется:** S3-бакет `s3-ds-20260915-ff9d3b0716`,
 
 &#x20; ключ `run\_date=<дата>/batch\_features.csv` (CSV: 17 846 строк — по одной на клиента, 19 колонок).
 
 &#x20; Каждый прогон пишет отдельный ключ и не перезаписывает предыдущие результаты.
 
-\- \*\*Встроенные проверки:\*\*
+- **Встроенные проверки:**
 
 &#x20; - задача DAG `validate\_saved\_result` — объект существует в S3 и `ContentLength > 0`;
 
@@ -190,7 +190,7 @@ DAG `batch\_features` (ручной запуск: `schedule=None`, `catchup=Fals
 
 &#x20;   (контроль встроен в `build\_batch\_features`).
 
-\- \*\*Внешняя проверка:\*\* notebook.ipynb, ячейка «Сверка результатов двух прогонов DAG»:
+- **Внешняя проверка:** notebook.ipynb, ячейка «Сверка результатов двух прогонов DAG»:
 
 &#x20; набор колонок и множество `customer\_id` у срезов идентичны, метка `run\_date` внутри таблиц
 
@@ -200,31 +200,31 @@ DAG `batch\_features` (ручной запуск: `schedule=None`, `catchup=Fals
 
 
 
-\## 9. Правила расчёта признаков (кратко)
+## 9. Правила расчёта признаков (кратко)
 
 
 
-\- Окна агрегации: `\[run\_date − 7d, run\_date)` и `\[run\_date − 30d, run\_date)`;
+- Окна агрегации: `\[run\_date − 7d, run\_date)` и `\[run\_date − 30d, run\_date)`;
 
 &#x20; фильтры строгие: `timestamp < run\_date`, `start\_time < run\_date`, `order\_time < run\_date`.
 
-\- Дедупликация по первичным ключам таблиц; `product\_id` участвует только в признаке
+- Дедупликация по первичным ключам таблиц; `product\_id` участвует только в признаке
 
 &#x20; уникальных товаров (строки с заданным значением).
 
-\- Денежные агрегаты (`orders\_cnt\_30d`, `orders\_sum\_usd\_30d`, `orders\_avg\_usd\_30d`) — только из `orders`.
+- Денежные агрегаты (`orders\_cnt\_30d`, `orders\_sum\_usd\_30d`, `orders\_avg\_usd\_30d`) — только из `orders`.
 
-\- Длина сессии = `max(timestamp) − min(timestamp)` по событиям сессии; сессия без событий → 0 сек;
+- Длина сессии = `max(timestamp) − min(timestamp)` по событиям сессии; сессия без событий → 0 сек;
 
 &#x20; средняя длина — за окно 30 дней.
 
-\- `days\_since\_last\_purchase` — по всей истории до `run\_date`; заказов не было → −1.
+- `days\_since\_last\_purchase` — по всей истории до `run\_date`; заказов не было → −1.
 
-\- Деление на ноль в конверсиях → 0.0; пропуски: счётчики → 0, вещественные → 0.0.
+- Деление на ноль в конверсиях → 0.0; пропуски: счётчики → 0, вещественные → 0.0.
 
 
 
-\### Состав признаков (контракт колонок)
+### Состав признаков (контракт колонок)
 
 `customer\_id`, `run\_date`, `page\_view\_cnt\_7d`, `page\_view\_cnt\_30d`,
 
@@ -235,4 +235,3 @@ DAG `batch\_features` (ручной запуск: `schedule=None`, `catchup=Fals
 `avg\_session\_duration\_sec\_30d`, `sessions\_cnt\_7d`, `sessions\_cnt\_30d`,
 
 `days\_since\_last\_purchase`, `orders\_cnt\_30d`, `orders\_sum\_usd\_30d`, `orders\_avg\_usd\_30d`.
-
