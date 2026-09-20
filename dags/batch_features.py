@@ -22,7 +22,13 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 from botocore.exceptions import ClientError
 
 # Модуль лежит рядом с DAG: папка dags/ есть в sys.path воркера Airflow
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent))
 from calculate_batch_features import build_batch_features, load_source_tables
+
+DAG_ID = "batch_features"
+
 
 DAG_ID = "batch_features"
 POSTGRES_CONN_ID = "ecommerce_db"   # Connection для сырых таблиц (по заданию)
