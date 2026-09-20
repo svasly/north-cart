@@ -3,8 +3,9 @@ stages:
 
 build_project:
   stage: build
+  image: python:3.9-slim  # Используем стандартный для этого курса образ
   script:
-    - echo "Передаем DAG-файлы в Практикум"
+    - echo "Передаем файлы DAG"
   artifacts:
     paths:
       - dags/
