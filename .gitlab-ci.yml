@@ -3,8 +3,9 @@ stages:
 
 build_project:
   stage: build
+  image: ""  # Пустая строка заставит GitLab использовать локальный дефолтный образ
   script:
-    - echo "Сборка артефактов без внешних образов"
+    - echo "Передаем DAG-файлы в Практикум"
   artifacts:
     paths:
       - dags/
